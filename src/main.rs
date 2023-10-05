@@ -18,11 +18,15 @@ async fn manual_hello2() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-  HttpServer::new(|| {
-      App::new()
-          .service(hello)
-          .route("/hey", web::get().to(manual_hello))
-          .route("/hey2", web::get().to(manual_hello2))
+    HttpServer::new(|| {
+        App::new()
+        .service(hello) // "/" 요청 처리
+        .service(
+            // "/api/~" 요청 처리
+            web::scope("/api")
+                .route("/hey",web::get().to(manual_hello))
+                .route("/hey2",web::get().to(manual_hello2))
+        )
   })
   .bind(SERVER_IP.to_owned()+":"+SERVER_PORT)?
   .run()
